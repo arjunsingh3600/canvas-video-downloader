@@ -51,17 +51,41 @@ def parseM3(url):
 
 
 
-def start_download(url):
+def start_download(url,name):
     """
 
     :param url: A valid streaming.video.ubc.ca/ url pointing to a m3u8 file
     :return: Associated video with the segments
     """
 
-
+    index =0
     tsUrls = parseM3(url)
 
-    open('1.ts', 'wb').write(requests.get(urls[2]).content)
+
+    with open(name + '.ts', 'ab') as f:
+        print(name)
+        for url in tsUrls:
+            r = requests.get(url)
+            if (r.status_code==200):
+                f.write(r.content)
+
+        print('downloaded')
+
+
+if __name__ == "__main__":
+    # to do : add command line interface
+    filename = 'urls.txt' # file name with index urls
+    with open(filename,'r') as url:
+        links = url.read()
+
+
+    links = links.split('\n')
+
+    subList = [(links[n],links[n+1]) for n in range(0, len(links), 2)]
+
+    for link in subList:
+        if link[1] != '' and link[0] !='':
+            start_download(link[1], link[0])
 
 
 
@@ -69,23 +93,3 @@ def start_download(url):
 
 
 
-
-
-
-
-
-def stitch_vids():
-    pass
-
-
-def saveFile():
-    pass
-
-
-downurl = "streaming.video.ubc.ca/hls/p/113/sp/11300/serveFlavor/entryId/0_7c97s2hl/v/2/ev/2/flavorId/0_ptw0zujb/name/a.mp4/index.m3u8"
-tsUrls = parseM3(downurl)
-
-
-print(tsUrls[3])
-# with open('1.ts','wb') as f:
-#     f.write(requests.get(tsUrls[1]).content)
