@@ -1,6 +1,7 @@
 import os
+import sys
 import requests
-import ffmpeg
+
 
 def addHttps(url):
     """
@@ -19,7 +20,7 @@ def parseM3(url):
     :return: returns the links of all associated .ts files
     """
 
-    content_type = 'application/vnd.apple.mpegurl'
+
     tsUrls = []
 
     try:
@@ -58,13 +59,22 @@ def start_download(url,name):
     :return: Associated video with the segments
     """
 
-    index =0
+
     tsUrls = parseM3(url)
 
+    index =0
 
     with open(name + '.ts', 'ab') as f:
-        print(name)
+
+
+
         for url in tsUrls:
+
+            os.system('cls')
+            print('Downloading {}'.format(name))
+            print('{} / {}'.format(index, len(tsUrls)))
+            index = index + 1
+
             r = requests.get(url)
             if (r.status_code==200):
                 f.write(r.content)
@@ -73,15 +83,30 @@ def start_download(url,name):
 
 
 if __name__ == "__main__":
-    # to do : add command line interface
-    filename = 'urls.txt' # file name with index urls
+
+
+    args = sys.argv
+
+    if '.txt' not in args[1]:
+        sys.exit(-1)
+    else:
+        print('invalid arg')
+        filename = args[1] # file name with index urls
+
+
+
+
     with open(filename,'r') as url:
         links = url.read()
 
 
     links = links.split('\n')
 
+
+
     subList = [(links[n],links[n+1]) for n in range(0, len(links), 2)]
+
+
 
     for link in subList:
         if link[1] != '' and link[0] !='':
@@ -89,7 +114,7 @@ if __name__ == "__main__":
 
 
 
-
+    sys.exit(0)
 
 
 
